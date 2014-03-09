@@ -1,0 +1,51 @@
+---
+
+- hosts: devserver
+
+  vars:
+    # settings for ansible to connect to the vagrant machine
+    ansible_ssh_user: "vagrant"
+    ansible_ssh_private_key_file: ~/.vagrant.d/insecure_private_key
+
+    docker_user: vagrant
+
+  remote_user: vagrant
+  sudo: true
+
+  tasks:
+  - name: update repos
+    apt: update_cache=yes
+
+  - name: install dependencies
+    apt: pkg={{ item }} state=latest
+    with_items:
+      - linux-image-extra-{{ ansible_kernel }}
+      - python-pycurl
+
+  - name: add docker repo key
+    apt_key:
+      url: https://get.docker.io/gpg
+      state: present
+
+  - name: add docker repo
+    apt_repository:
+      repo='deb https://get.docker.io/ubuntu docker main'
+      state=present
+
+  - name: update repos
+    apt: update_cache=yes
+
+  - name: install docker
+    apt: pkg=lxc-docker state=latest
+    notify:
+    - restart docker
+
+  - name: create docker group
+    group: name=docker state=present
+
+  - name: add user to docker group
+    user: name={{ docker_user }} groups="admin,docker"
+
+  handlers:
+    - name: restart docker
+      service: name=docker state=restarted
