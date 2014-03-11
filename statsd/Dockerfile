@@ -3,10 +3,11 @@ MAINTAINER Xabier Larrakoetxea <slok69@gmail.com>
 
 # Update the system
 RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
-RUN apt-get update
 
 # Install dependencies
-RUN apt-get -y install nodejs git
+RUN apt-get update && apt-get -y install \
+    nodejs \
+    git
 
 # Install statsd
 RUN git clone https://github.com/etsy/statsd.git /var/lib/statsd
