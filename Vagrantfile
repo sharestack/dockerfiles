@@ -10,6 +10,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.network :private_network, ip: "192.168.100.46"
 
+  config.vm.network :forwarded_port, guest: 80, host: 8080 # Nginx
+
   config.vm.synced_folder ".", "/home/vagrant/dockerfiles"
 
   config.vm.provider :virtualbox do |vb|
