@@ -4,7 +4,6 @@ MAINTAINER Xabier Larrakoetxea <slok69@gmail.com>
 # Update the system
 RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
 RUN apt-get update
-RUN apt-get upgrade -y
 
 # Install dependencies
 RUN apt-get -y install nodejs git
@@ -20,4 +19,4 @@ EXPOSE 8125/udp
 # Admin port 8126
 EXPOSE 8126
 
-CMD ["/usr/bin/node", "/var/lib/statsd/stats.js", "/var/lib/statsd/config.js"]
+CMD ["/usr/bin/node", "/var/lib/statsd/stats.js", "/var/lib/statsd/config.js", "2>&1", ">>", "/var/log/statsd.log"]
