@@ -24,6 +24,8 @@ RUN pip install \
     python-memcached \
     django-tagging \
     txamqp \
+    django \
+    Twisted==11.1.0 \
     https://github.com/graphite-project/ceres/tarball/master \
     whisper \
     carbon \
@@ -39,6 +41,8 @@ ADD ./wsgi.py /opt/graphite/webapp/graphite/wsgi.py
 
 RUN mv /opt/graphite/conf/carbon.conf.example /opt/graphite/conf/carbon.conf
 RUN mv /opt/graphite/conf/storage-schemas.conf.example /opt/graphite/conf/storage-schemas.conf
+
+RUN chown -R www-data:www-data /opt/graphite
 
 # Carbon
 EXPOSE 2003
