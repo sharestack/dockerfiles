@@ -24,7 +24,7 @@ RUN pip install \
     python-memcached \
     django-tagging \
     txamqp \
-    django \
+    django==1.5.5 \
     Twisted==11.1.0 \
     https://github.com/graphite-project/ceres/tarball/master \
     whisper \
@@ -38,11 +38,18 @@ ADD ./nginx.conf /etc/nginx/nginx.conf
 ADD ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 ADD ./uwsgi.ini /opt/graphite/webapp/uwsgi.ini 
 ADD ./wsgi.py /opt/graphite/webapp/graphite/wsgi.py
+ADD ./local_settings.py /opt/graphite/webapp/graphite/local_settings.py
+# Admin user: admin/admin
+ADD ./initial_data.json /opt/graphite/webapp/graphite/initial_data.json 
 
 RUN mv /opt/graphite/conf/carbon.conf.example /opt/graphite/conf/carbon.conf
 RUN mv /opt/graphite/conf/storage-schemas.conf.example /opt/graphite/conf/storage-schemas.conf
+RUN cd /opt/graphite/webapp/graphite && python manage.py syncdb --noinput
 
+
+# Permission stuff
 RUN chown -R www-data:www-data /opt/graphite
+RUN chown -R www-data:www-data /var/log/nginx
 
 # Carbon
 EXPOSE 2003
