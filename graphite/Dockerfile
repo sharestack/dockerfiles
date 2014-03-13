@@ -3,10 +3,8 @@ MAINTAINER Xabier Larrakoetxea <slok69@gmail.com>
 
 # Update the system
 RUN echo "deb http://archive.ubuntu.com/ubuntu precise main universe" > /etc/apt/sources.list
-RUN apt-get update
 
 # Install dependencies
-
 RUN apt-get update && apt-get install -y \
     python \
     python-dev \
@@ -42,8 +40,8 @@ ADD ./local_settings.py /opt/graphite/webapp/graphite/local_settings.py
 # Admin user: admin/admin
 ADD ./initial_data.json /opt/graphite/webapp/graphite/initial_data.json 
 
-RUN mv /opt/graphite/conf/carbon.conf.example /opt/graphite/conf/carbon.conf
-RUN mv /opt/graphite/conf/storage-schemas.conf.example /opt/graphite/conf/storage-schemas.conf
+ADD ./carbon.conf /opt/graphite/conf/carbon.conf
+ADD ./storage-schemas.conf /opt/graphite/conf/storage-schemas.conf
 RUN cd /opt/graphite/webapp/graphite && python manage.py syncdb --noinput
 
 
